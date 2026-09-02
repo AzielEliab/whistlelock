@@ -155,6 +155,17 @@ python -m venv .venv && source .venv/bin/activate && pip install -e ".[dev]"
 python -m pytest -q
 ```
 
+## Cite this
+
+Aziel Eliab. WhistleLock. https://github.com/AzielEliab/whistlelock. https://whistlelock-download-tracker.vibelock.workers.dev. https://doi.org/10.5281/zenodo.22257762.
+
+- Catalog: https://aziel-runtime.vibelock.workers.dev/
+- Worker homepage: https://whistlelock-download-tracker.vibelock.workers.dev/
+- Counted download (gzip HTTP 200, no 302): https://whistlelock-download-tracker.vibelock.workers.dev/download
+- GitHub: https://github.com/AzielEliab/whistlelock
+- Citation JSON: https://whistlelock-download-tracker.vibelock.workers.dev/cite.json
+- DOI: https://doi.org/10.5281/zenodo.22257762
+
 ## License
 
 Apache License 2.0. Copyright 2026 Aziel Eliab.
