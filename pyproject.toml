@@ -1,0 +1,55 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "whistlelock"
+version = "0.1.0"
+description = "WhistleLock: local drop ledger + dead-man copy. Not a mailer. Author Aziel Eliab."
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [{name = "Aziel Eliab"}]
+requires-python = ">=3.10"
+keywords = [
+    "whistlelock",
+    "ledger",
+    "sha256",
+    "dead-man",
+    "drop",
+    "local-vault",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Intended Audience :: Developers",
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=7.4"]
+
+[project.scripts]
+whistlelock = "whistlelock.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/AzielEliab/whistlelock"
+Download = "https://whistlelock-download-tracker.vibelock.workers.dev/download?asset=whistlelock-0.1.0.tar.gz"
+Issues = "https://github.com/AzielEliab/whistlelock/issues"
+Counted-downloads = "https://whistlelock-download-tracker.vibelock.workers.dev/"
+DOI = "https://doi.org/10.5281/zenodo.22257762"
+
+[tool.setuptools.packages.find]
+include = ["whistlelock*"]
+
+[tool.setuptools.package-data]
+whistlelock = ["web/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q"

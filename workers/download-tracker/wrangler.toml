@@ -1,0 +1,14 @@
+name = "whistlelock-download-tracker"
+main = "src/index.js"
+compatibility_date = "2026-07-01"
+workers_dev = true
+account_id = "ac575a9b822bea2bed97d0ab73aed238"
+
+[[kv_namespaces]]
+binding = "DOWNLOADS"
+id = "e899fc43a5c3411980214499c0267e94"
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+run_worker_first = ["/", "/download", "/download/*", "/stats", "/event", "/go", "/count", "/install.sh", "/v1", "/v1/*", "/openapi.json", "/ai", "/ai/*", "/mcp", "/mcp/"]

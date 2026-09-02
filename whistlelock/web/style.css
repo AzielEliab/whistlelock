@@ -1,0 +1,180 @@
+/* WhistleLock local UI. No CDN. Dark matte / gold. Does not mail. */
+:root {
+  --bg: #0b0b0b;
+  --panel: #141414;
+  --ink: #e8e0d0;
+  --muted: #8a8070;
+  --line: #2a261c;
+  --gold: #c9a227;
+  --gold-dim: #8a7219;
+  --pass: #3dba7a;
+  --warn: #e0a13a;
+  --fail: #d4534b;
+  font-synthesis: none;
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Source Serif 4", "Iowan Old Style", Palatino, "Palatino Linotype", Georgia, serif;
+  line-height: 1.45;
+}
+body {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 2.1rem 1.2rem 4rem;
+}
+.tag {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+h1 {
+  font-size: 2rem;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  margin: 0.35rem 0 0.25rem;
+  color: var(--gold);
+}
+.motto {
+  color: var(--gold);
+  font-style: italic;
+  margin: 0 0 0.85rem;
+  font-size: 1.05rem;
+}
+.lede {
+  color: var(--muted);
+  margin: 0 0 1.2rem;
+  max-width: 42rem;
+}
+.banner {
+  margin: 0 0 1.3rem;
+  padding: 0.9rem 1rem;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  font-size: 0.95rem;
+}
+.banner.limit {
+  background: #1a1610;
+  color: var(--ink);
+  border-color: var(--gold-dim);
+}
+.view-toggle {
+  display: flex;
+  gap: 0.4rem;
+  margin: 0 0 1rem;
+}
+button {
+  background: var(--gold);
+  color: var(--bg);
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  padding: 0.7rem 1.05rem;
+  font: inherit;
+  font-weight: 650;
+  cursor: pointer;
+  min-height: 2.6rem;
+}
+button.view {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--line);
+}
+button.view.on {
+  background: var(--gold);
+  color: var(--bg);
+  border-color: var(--gold);
+}
+.counts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+  margin: 0 0 1.1rem;
+}
+.counts div {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.7rem 0.8rem;
+  text-align: center;
+}
+.counts span {
+  display: block;
+  font-size: 1.6rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+.counts label {
+  color: var(--muted);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.counts .armed span { color: var(--warn); }
+.counts .released span { color: var(--fail); }
+.counts .ok span { color: var(--pass); }
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 0 0 1.1rem;
+}
+form fieldset {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+  padding: 1rem 1.05rem 1.1rem;
+  margin: 0 0 1rem;
+}
+legend { color: var(--gold); padding: 0 0.4rem; }
+label {
+  display: block;
+  margin: 0.7rem 0 0.25rem;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+.kicker {
+  display: block;
+  color: var(--ink);
+  font-weight: 650;
+}
+input, textarea, select {
+  width: 100%;
+  background: #1a1a1a;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.5rem 0.65rem;
+  font: inherit;
+}
+input:focus, textarea:focus, select:focus {
+  outline: 2px solid var(--gold);
+  border-color: var(--gold);
+}
+body.simple .advanced-only { display: none !important; }
+.kid { font-size: 1.05rem; }
+.sha-line {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.82rem;
+  color: var(--muted);
+  word-break: break-all;
+}
+.advanced-panel pre {
+  background: #0e0e0e;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.8rem;
+  overflow: auto;
+  font-size: 0.78rem;
+  max-height: 22rem;
+}
+footer {
+  margin-top: 2rem;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+.foot-note { font-size: 0.82rem; }

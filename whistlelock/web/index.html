@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WhistleLock — local drop ledger + dead-man copy</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body class="simple">
+  <header>
+    <div class="tag">WhistleLock · v0.1.0 · loopback · does not mail</div>
+    <h1>WhistleLock</h1>
+    <p class="motto">Store the record. Chain the row. Release the packet locally.</p>
+    <p class="lede">
+      This is a folder on this computer. You drop a file you already have.
+      We hash it and chain the line. If you stop checking in, we copy a
+      packet you already placed into released/. We do not mail it.
+      You move the files.
+    </p>
+  </header>
+
+  <aside class="banner limit" role="note">
+    THIS IS: a local vault + a chained ledger + a local dead-man copy.
+    THIS IS NOT: a mailer, a rotating From: address, IP masking, a mixnet,
+    an inbox scraper, a public website, UL, FoldLock, EmployeeLock, or
+    GodLock. Dead-man copy is LOCAL. Hosted never holds whistle files.
+    Demo drops are generic (“sample drop”).
+  </aside>
+
+  <div class="view-toggle" role="group" aria-label="Simple or advanced view">
+    <button type="button" id="view-simple" class="view on" aria-pressed="true">Simple</button>
+    <button type="button" id="view-advanced" class="view" aria-pressed="false">Advanced</button>
+  </div>
+
+  <section class="counts" aria-live="polite">
+    <div><span id="c-drops">0</span><label>drops</label></div>
+    <div><span id="c-rows">0</span><label>rows</label></div>
+    <div class="armed"><span id="c-armed">0</span><label>armed</label></div>
+    <div class="window"><span id="c-window">—</span><label>window h</label></div>
+    <div class="released"><span id="c-released">0</span><label>released</label></div>
+    <div class="ok"><span id="c-ok">0</span><label>chain OK</label></div>
+  </section>
+
+  <div class="actions simple-actions">
+    <button type="button" id="btn-init">Init</button>
+    <button type="button" id="btn-drop">Drop file</button>
+    <button type="button" id="btn-checkin">Check in</button>
+    <button type="button" id="btn-arm">Arm</button>
+    <button type="button" id="btn-tick">Tick</button>
+    <button type="button" id="btn-verify">Verify</button>
+    <input id="drop-file" type="file" hidden>
+  </div>
+
+  <form id="simple-form" autocomplete="off">
+    <fieldset>
+      <legend>Drop + arm</legend>
+      <label for="summary"><span class="kicker">Summary</span> A short name for this drop. Demo: sample drop.</label>
+      <input id="summary" name="summary" value="sample drop">
+      <label for="hours"><span class="kicker">Arm hours</span> How long you have to check in. Tick copies locally if you miss it. Does not mail.</label>
+      <input id="hours" name="hours" type="number" min="1" value="1">
+    </fieldset>
+  </form>
+
+  <div class="actions advanced-only">
+    <button type="button" id="btn-sample">Sample</button>
+    <button type="button" id="btn-list">List</button>
+    <button type="button" id="btn-export">Export receipt</button>
+    <button type="button" id="btn-doctor">Doctor</button>
+    <button type="button" id="btn-packet">Place packet file</button>
+    <input id="packet-file" type="file" hidden>
+  </div>
+
+  <form id="adv-form" class="advanced-only" autocomplete="off">
+    <fieldset>
+      <legend>Advanced drop fields</legend>
+      <label for="source"><span class="kicker">Source note</span> Optional. A note you already know.</label>
+      <input id="source" name="source" placeholder="operator note">
+      <label for="url"><span class="kicker">Source URL</span> A locator you already know. Not a hunt. verify --refresh hits this exact URL only.</label>
+      <input id="url" name="url" placeholder="https://example.invalid/file">
+    </fieldset>
+  </form>
+
+  <section class="report" aria-live="polite">
+    <p id="kid-plain" class="kid">Init a store, drop a file you already have, check in so the clock resets. Arm sets the hours. Tick copies the packet locally if you are late. We do not mail it.</p>
+    <p id="verify-line" class="sha-line"></p>
+    <p id="deadman-line" class="sha-line"></p>
+    <div id="advanced-panel" class="advanced-panel" hidden>
+      <h2>Ledger</h2>
+      <pre id="rows-pre">[]</pre>
+    </div>
+  </section>
+
+  <footer>
+    <p>Apache-2.0 · Aziel Eliab · 2026 · Bound to 127.0.0.1:8873 · Forks welcome and always allowed.</p>
+    <p class="foot-note">Not a mailer. Dead-man copy is local. Hosted never holds whistle files. Paper WL-WP-0.1 · doi:10.5281/zenodo.22257762 (preprint also covers FoldLock; this product is WhistleLock only).</p>
+  </footer>
+  <script src="/app.js"></script>
+</body>
+</html>
