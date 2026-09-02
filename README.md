@@ -155,6 +155,15 @@ python -m venv .venv && source .venv/bin/activate && pip install -e ".[dev]"
 python -m pytest -q
 ```
 
+## Use with Grok / ChatGPT / Venice
+
+Catalog OpenAPI: https://aziel-runtime.vibelock.workers.dev/openapi.json
+Catalog MCP: `POST https://aziel-runtime.vibelock.workers.dev/mcp`
+This Worker skill: https://whistlelock-download-tracker.vibelock.workers.dev/v1/skill
+This Worker OpenAPI: https://whistlelock-download-tracker.vibelock.workers.dev/openapi.json
+
+Grok: import the catalog or Worker OpenAPI as a custom tool. ChatGPT: GPT Actions (no auth). Venice: HTTP tools. Always send `User-Agent: Mozilla/5.0`.
+
 ## Cite this
 
 Aziel Eliab. WhistleLock. https://github.com/AzielEliab/whistlelock. https://whistlelock-download-tracker.vibelock.workers.dev. https://doi.org/10.5281/zenodo.22257762.

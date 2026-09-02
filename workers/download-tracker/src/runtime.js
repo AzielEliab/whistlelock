@@ -3,6 +3,11 @@
  * /v1 never touches DOWNLOADS KV. Not a mailer.
  */
 const PRODUCT = "whistlelock";
+const EXAMPLE_PAYLOAD = {
+  "summary": "sample drop",
+  "kind": "drop"
+};
+
 const VERSION = "0.1.0";
 const SPEC = "whistlelock-v0";
 const HOST = "https://whistlelock-download-tracker.vibelock.workers.dev";
@@ -23,7 +28,7 @@ const HASHED_FIELDS = [
   "timestamp",
 ];
 
-const SKILL_MD = "---\nname: WhistleLock\ndescription: Use this when someone already has a whistle file and needs a local hashed drop ledger plus a local dead-man copy. Not a mailer. Hosted /v1 never stores drops.\n---\n\n# WhistleLock skill\n\nWhistleLock is a **local folder** that copies a file you already have, hashes it, and chains the row. If you stop checking in, it copies a packet you already placed into `released/`. **It does not mail.** It does not rotate From: addresses. It does not hide your IP. It does not scrape inboxes.\n\nCall it when:\n\n- the operator already holds a file (a `.eml` they saved, a PDF, a note) and wants a hashed drop;\n- they want a dead-man **copy on this machine**, not a send path.\n\nDo **not** call it to send anonymous mail, mask IP, hunt inboxes, or store whistle files on the hosted Worker.\n\nAuthor: **Aziel Eliab**. Apache-2.0. Paper WL-WP-0.1. DOI [10.5281/zenodo.22257762](https://doi.org/10.5281/zenodo.22257762) (that preprint also covers FoldLock; this product is WhistleLock only).\n\n## Hosted /v1 never stores drops\n\nThe Worker is a counted download + a preview API.\n\n- `GET /v1/health` \u2014 liveness. Does not increment downloads.\n- `POST /v1/hash-preview` \u2014 SHA-256 of posted bytes. **Not stored.**\n- `POST /v1/canon-preview` \u2014 hash a proposed ledger row. **Not stored.**\n- `GET /v1/skill` \u2014 this markdown. Does not increment downloads.\n\nHosted never holds whistle files. Hosted is not a mailer.\n\nAlways send `User-Agent: Mozilla/5.0`. Cloudflare Workers may 403 empty agents.\n\n## OpenAPI and MCP\n\n- This Worker OpenAPI: https://whistlelock-download-tracker.vibelock.workers.dev/openapi.json\n- Catalog OpenAPI: https://aziel-runtime.vibelock.workers.dev/openapi.json\n- MCP: `POST https://whistlelock-download-tracker.vibelock.workers.dev/mcp`\n- Catalog MCP: `POST https://aziel-runtime.vibelock.workers.dev/mcp`\n\nGrok: import the OpenAPI as a custom tool. ChatGPT: GPT Actions \u2192 Import from URL. Venice: HTTP tools.\n\nCounted install (this Worker, HTTP 200 gzip, no 302 to GitHub):\n\n```bash\ncurl -fsSL https://whistlelock-download-tracker.vibelock.workers.dev/install.sh | bash\n```\n\nThen `whistlelock ui` \u2192 http://127.0.0.1:8873 (loopback only). Tap **Init / Drop / Check in / Arm / Tick / Verify**. Dead-man copy is local. Does not mail.\n\n## Honest one-liner\n\nTHIS IS a local vault + chained rows + local dead-man copy. THIS IS NOT a mailer, mixnet, IP mask, inbox scraper, UL, FoldLock, EmployeeLock, or GodLock.\n\nForks are welcome and always allowed.\n";
+const SKILL_MD = "---\nname: WhistleLock\ndescription: Use this when someone already has a whistle file and needs a local hashed drop ledger plus a local dead-man copy. Not a mailer. Hosted /v1 never stores drops.\n---\n\n# WhistleLock skill\n\nWhistleLock is a **local folder** that copies a file you already have, hashes it, and chains the row. If you stop checking in, it copies a packet you already placed into `released/`. **It does not mail.** It does not rotate From: addresses. It does not hide your IP. It does not scrape inboxes.\n\nCall it when:\n\n- the operator already holds a file (a `.eml` they saved, a PDF, a note) and wants a hashed drop;\n- they want a dead-man **copy on this machine**, not a send path.\n\nDo **not** call it to send anonymous mail, mask IP, hunt inboxes, or store whistle files on the hosted Worker.\n\nAuthor: **Aziel Eliab**. Apache-2.0. Paper WL-WP-0.1. DOI [10.5281/zenodo.22257762](https://doi.org/10.5281/zenodo.22257762) (that preprint also covers FoldLock; this product is WhistleLock only).\n\n## Hosted /v1 never stores drops\n\nThe Worker is a counted download + a preview API.\n\n- `GET /v1/health` \u2014 liveness. Does not increment downloads.\n- `POST /v1/hash-preview` \u2014 SHA-256 of posted bytes. **Not stored.**\n- `POST /v1/canon-preview` \u2014 hash a proposed ledger row. **Not stored.**\n- `GET /v1/skill` \u2014 this markdown. Does not increment downloads.\n\nHosted never holds whistle files. Hosted is not a mailer.\n\nAlways send `User-Agent: Mozilla/5.0`. Cloudflare Workers may 403 empty agents.\n\n## OpenAPI and MCP\n\n- This Worker OpenAPI: https://whistlelock-download-tracker.vibelock.workers.dev/openapi.json\n- Catalog OpenAPI: https://aziel-runtime.vibelock.workers.dev/openapi.json\n- MCP: `POST https://whistlelock-download-tracker.vibelock.workers.dev/mcp`\n- Catalog MCP: `POST https://aziel-runtime.vibelock.workers.dev/mcp`\n\nGrok: import the OpenAPI as a custom tool. ChatGPT: GPT Actions \u2192 Import from URL. Venice: HTTP tools.\n\nCounted install (this Worker, HTTP 200 gzip, no 302 to GitHub):\n\n```bash\ncurl -fsSL https://whistlelock-download-tracker.vibelock.workers.dev/install.sh | bash\n```\n\nThen `whistlelock ui` \u2192 http://127.0.0.1:8873 (loopback only). Tap **Init / Drop / Check in / Arm / Tick / Verify**. Dead-man copy is local. Does not mail.\n\n## Honest one-liner\n\nTHIS IS a local vault + chained rows + local dead-man copy. THIS IS NOT a mailer, mixnet, IP mask, inbox scraper, UL, FoldLock, EmployeeLock, or GodLock.\n\nForks are welcome and always allowed.\n\n## Catalog + local UI\n\nAuthor: **Aziel Eliab**. Honest scope: Local drop ledger + dead-man copy. Not a mailer. Hosted never holds whistle files.\n\n- Catalog product: https://aziel-runtime.vibelock.workers.dev/p/whistlelock/\n- Catalog OpenAPI: https://aziel-runtime.vibelock.workers.dev/openapi.json\n- Catalog MCP: `POST https://aziel-runtime.vibelock.workers.dev/mcp`\n- This Worker skill: `GET https://whistlelock-download-tracker.vibelock.workers.dev/v1/skill`\n- This Worker OpenAPI: https://whistlelock-download-tracker.vibelock.workers.dev/openapi.json\n- Sample payload: `GET https://whistlelock-download-tracker.vibelock.workers.dev/v1/example`\n\nLocal UI: **Import JSON file** (`type=file`) and **Export JSON**. Then `whistlelock doctor`.\n\nGrok: import catalog or Worker OpenAPI as a custom tool. ChatGPT: GPT Actions. Venice: HTTP tools.\n";
 
 function corsHeaders() {
   return {
@@ -156,6 +161,7 @@ function openapiSpec(origin) {
     },
     servers: [{ url: origin }],
     paths: {
+            "/v1/example": { get: { operationId: "whistlelockExample", summary: "Sample JSON payload. Does not increment downloads.", responses: { "200": { description: "OK" } } } },
       "/v1/health": {
         get: {
           operationId: "whistlelock_health",
@@ -330,6 +336,16 @@ export async function handleRuntimeApi(request, url) {
       mails: false,
     });
   }
+  if ((path === "/v1/example" || path === "/v1/example/") && (request.method === "GET" || request.method === "HEAD")) {
+    return json({
+      ok: true,
+      product: PRODUCT,
+      author: "Aziel Eliab",
+      example: EXAMPLE_PAYLOAD,
+      note: "Sample payload only. Does not increment downloads.",
+    });
+  }
+
   if (path === "/v1/skill" && request.method === "GET") {
     return new Response(SKILL_MD, {
       status: 200,

@@ -51,3 +51,18 @@ Then `whistlelock ui` → http://127.0.0.1:8873 (loopback only). Tap **Init / Dr
 THIS IS a local vault + chained rows + local dead-man copy. THIS IS NOT a mailer, mixnet, IP mask, inbox scraper, UL, FoldLock, EmployeeLock, or GodLock.
 
 Forks are welcome and always allowed.
+
+## Catalog + local UI
+
+Author: **Aziel Eliab**. Honest scope: Local drop ledger + dead-man copy. Not a mailer. Hosted never holds whistle files.
+
+- Catalog product: https://aziel-runtime.vibelock.workers.dev/p/whistlelock/
+- Catalog OpenAPI: https://aziel-runtime.vibelock.workers.dev/openapi.json
+- Catalog MCP: `POST https://aziel-runtime.vibelock.workers.dev/mcp`
+- This Worker skill: `GET https://whistlelock-download-tracker.vibelock.workers.dev/v1/skill`
+- This Worker OpenAPI: https://whistlelock-download-tracker.vibelock.workers.dev/openapi.json
+- Sample payload: `GET https://whistlelock-download-tracker.vibelock.workers.dev/v1/example`
+
+Local UI: **Import JSON file** (`type=file`) and **Export JSON**. Then `whistlelock doctor`.
+
+Grok: import catalog or Worker OpenAPI as a custom tool. ChatGPT: GPT Actions. Venice: HTTP tools.
