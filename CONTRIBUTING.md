@@ -29,8 +29,7 @@ No network. No ML. No mailer.
    or KV. Namespace `WHISTLELOCK_DOWNLOADS` only.
 5. **Public identity is Aziel Eliab.** Do not add GodLock.AZ as an
    identity label.
-6. **Do not put private case facts** (Horton, Madelyn, Hamilton Superior)
-   in the repo. Demo drops stay generic (`sample drop`).
+6. **Do not put private case facts** in the repo. Demo drops stay generic (`sample drop`).
 7. New behavior needs a test that fails without the change.
 8. Canonical JSON: UTF-8, sorted keys, compact separators. Genesis
    `prev_hash` is 64 ASCII zeros. Correction = new row.
