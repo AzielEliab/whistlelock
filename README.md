@@ -119,7 +119,9 @@ Cron example (this machine, this store, **no mailer**):
 */15 * * * * python3 /path/whistlelock.py tick /path/STORE
 ```
 
-## AI (Grok / ChatGPT / Venice)
+## Use with AI assistants
+
+Works with ChatGPT (GPT Actions / OpenAI), Grok (xAI), Venice, Claude (Anthropic), Cursor (MCP), Glama (MCP), Perplexity, Microsoft Copilot / Bing, Google Gemini / Vertex, Mistral, Meta AI, Apple Intelligence surfaces, Amazon Q tooling, DuckAssist, You.com, Cohere, and other MCP/OpenAPI-capable assistants.
 
 Skill file: [SKILL.md](SKILL.md). Same markdown at
 `GET /v1/skill` (does not increment downloads).
@@ -132,8 +134,10 @@ Skill file: [SKILL.md](SKILL.md). Same markdown at
 Always send `User-Agent: Mozilla/5.0`. Hosted `/v1` never stores drops
 or packets. Ops: `health`, `hash-preview`, `canon-preview`, `skill`.
 
-Grok: import the OpenAPI as a custom tool. ChatGPT: GPT Actions → Import
-from URL. Venice: HTTP tools.
+ChatGPT: GPT Actions → Import from URL (no auth). Grok: import the
+OpenAPI as a custom tool, or MCP. Venice: HTTP tools. Claude, Cursor,
+Glama, and other MCP clients: `POST` the Worker or catalog MCP URL.
+Other OpenAPI-capable assistants: import the same OpenAPI.
 
 ```bash
 curl -A Mozilla/5.0 https://whistlelock-download-tracker.vibelock.workers.dev/v1/health
@@ -155,14 +159,14 @@ python -m venv .venv && source .venv/bin/activate && pip install -e ".[dev]"
 python -m pytest -q
 ```
 
-## Use with Grok / ChatGPT / Venice
+## Catalog and Worker import
 
 Catalog OpenAPI: https://aziel-runtime.vibelock.workers.dev/openapi.json
 Catalog MCP: `POST https://aziel-runtime.vibelock.workers.dev/mcp`
 This Worker skill: https://whistlelock-download-tracker.vibelock.workers.dev/v1/skill
 This Worker OpenAPI: https://whistlelock-download-tracker.vibelock.workers.dev/openapi.json
 
-Grok: import the catalog or Worker OpenAPI as a custom tool. ChatGPT: GPT Actions (no auth). Venice: HTTP tools. Always send `User-Agent: Mozilla/5.0`.
+Same assistants as above: ChatGPT (GPT Actions / OpenAI), Grok (xAI), Venice, Claude (Anthropic), Cursor (MCP), Glama (MCP), Perplexity, Microsoft Copilot / Bing, Google Gemini / Vertex, Mistral, Meta AI, Apple Intelligence surfaces, Amazon Q tooling, DuckAssist, You.com, Cohere, and other MCP/OpenAPI-capable clients. ChatGPT: GPT Actions (no auth). Grok: import the catalog or Worker OpenAPI as a custom tool, or MCP. Venice: HTTP tools. Claude, Cursor, Glama, and other MCP clients: `POST` the catalog or Worker MCP URL. Always send `User-Agent: Mozilla/5.0`.
 
 ## Cite this
 

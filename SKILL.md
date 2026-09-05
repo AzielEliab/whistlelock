@@ -36,7 +36,9 @@ Always send `User-Agent: Mozilla/5.0`. Cloudflare Workers may 403 empty agents.
 - MCP: `POST https://whistlelock-download-tracker.vibelock.workers.dev/mcp`
 - Catalog MCP: `POST https://aziel-runtime.vibelock.workers.dev/mcp`
 
-Grok: import the OpenAPI as a custom tool. ChatGPT: GPT Actions → Import from URL. Venice: HTTP tools.
+Works with ChatGPT (GPT Actions / OpenAI), Grok (xAI), Venice, Claude (Anthropic), Cursor (MCP), Glama (MCP), Perplexity, Microsoft Copilot / Bing, Google Gemini / Vertex, Mistral, Meta AI, Apple Intelligence surfaces, Amazon Q tooling, DuckAssist, You.com, Cohere, and other MCP/OpenAPI-capable assistants.
+
+ChatGPT: GPT Actions → Import from URL (no auth). Grok: import the OpenAPI as a custom tool, or MCP. Venice: HTTP tools. Claude, Cursor, Glama, and other MCP clients: `POST` the Worker or catalog MCP URL. Other OpenAPI-capable assistants: import the same OpenAPI.
 
 Counted install (this Worker, HTTP 200 gzip, no 302 to GitHub):
 
@@ -65,4 +67,4 @@ Author: **Aziel Eliab**. Honest scope: Local drop ledger + dead-man copy. Not a 
 
 Local UI: **Import JSON file** (`type=file`) and **Export JSON**. Then `whistlelock doctor`.
 
-Grok: import catalog or Worker OpenAPI as a custom tool. ChatGPT: GPT Actions. Venice: HTTP tools.
+Same assistants as above. ChatGPT: GPT Actions. Grok: import catalog or Worker OpenAPI as a custom tool, or MCP. Venice: HTTP tools. Claude, Cursor, Glama, and other MCP clients: `POST` the catalog or Worker MCP URL.
