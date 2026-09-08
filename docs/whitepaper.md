@@ -220,5 +220,12 @@ journalists, and does not hide the operator’s network identity.
 | License | Apache-2.0 |
 | Author | Aziel Eliab |
 
+The Worker homepage shows a suite Live Nodes strip. `/v1/mesh/*` PROXY
+to aziel-runtime. Suite mesh default OFF. QNM rollup is
+live|locked|isolated counts only. No Node Gate. No auto-heal. Not an
+anonymity network. Anon-broadcast is not a publish path. WhistleLock
+remains a local drop ledger + dead-man copy. Not a mailer. Hosted never
+holds whistle files.
+
 A fork that adds hidden From: rotation or IP masking and keeps this name
 is no longer this spec.

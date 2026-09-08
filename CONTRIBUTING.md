@@ -30,8 +30,11 @@ No network. No ML. No mailer.
 5. **Public identity is Aziel Eliab.** Do not add GodLock.AZ as an
    identity label.
 6. **Do not put private case facts** in the repo. Demo drops stay generic (`sample drop`).
-7. New behavior needs a test that fails without the change.
-8. Canonical JSON: UTF-8, sorted keys, compact separators. Genesis
+7. **Door vs local op.** `/v1/mesh/*` PROXY to aziel-runtime. Local ops are `/v1/{op}` only.
+   Suite mesh default OFF; QNM rollup live|locked|isolated; no Node Gate;
+   no auto-heal; not anonymity.
+8. New behavior needs a test that fails without the change.
+9. Canonical JSON: UTF-8, sorted keys, compact separators. Genesis
    `prev_hash` is 64 ASCII zeros. Correction = new row.
 
 ## Where to change things
@@ -44,6 +47,7 @@ No network. No ML. No mailer.
 - Skill: `SKILL.md` (same text at Worker `GET /v1/skill`)
 - Flutter: `mobile/`
 - Isolated counter: `workers/download-tracker/`
+- Suite mesh / QNM Live Nodes: `workers/download-tracker/src/mesh.js` (`/v1/mesh/*` PROXY to aziel-runtime).
 
 ## License of contributions
 
