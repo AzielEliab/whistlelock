@@ -67,7 +67,7 @@ Direct tarball (also counted):
 - Live count JSON: [https://whistlelock-download-tracker.vibelock.workers.dev/stats](https://whistlelock-download-tracker.vibelock.workers.dev/stats)
 - OpenAPI: [https://whistlelock-download-tracker.vibelock.workers.dev/openapi.json](https://whistlelock-download-tracker.vibelock.workers.dev/openapi.json)
 - Skill: [https://whistlelock-download-tracker.vibelock.workers.dev/v1/skill](https://whistlelock-download-tracker.vibelock.workers.dev/v1/skill)
-- Suite mesh proxy: [https://whistlelock-download-tracker.vibelock.workers.dev/v1/mesh](https://whistlelock-download-tracker.vibelock.workers.dev/v1/mesh) — default OFF; QNM live / locked / isolated
+- Suite mesh proxy: [https://whistlelock-download-tracker.vibelock.workers.dev/v1/mesh](https://whistlelock-download-tracker.vibelock.workers.dev/v1/mesh) — default OFF; QNM live / locked / isolated; QNS-CD-1.0 cite (no public qnsd proxy)
 - GitHub: [https://github.com/AzielEliab/whistlelock](https://github.com/AzielEliab/whistlelock)
 
 Isolated counter: Worker `whistlelock-download-tracker`, KV `WHISTLELOCK_DOWNLOADS`. Not mixed with any other product. `/v1` does not increment downloads. Hosted never holds whistle files.
@@ -134,7 +134,7 @@ Skill file: [SKILL.md](SKILL.md). Same markdown at
 
 Always send `User-Agent: Mozilla/5.0`. Hosted `/v1` never stores drops
 or packets. Ops: `health`, `hash-preview`, `canon-preview`, `skill`.
-Suite mesh `/v1/mesh/*` PROXY via `AZIEL_RUNTIME` (default OFF; QNM-BUILD-1.0 live|locked|isolated; no Node Gate). Catalog MCP `mesh_*` + FragGate `slug=mesh`.
+Suite mesh `/v1/mesh/*` PROXY via `AZIEL_RUNTIME` (default OFF; QNM-BUILD-1.0 live|locked|isolated; QNS-CD-1.0 photon QNS1 packet transfer is a hub cite / Worker mesh cross-map only — local qnsd in [qnm-node](https://github.com/AzielEliab/qnm-node); runtime cites + catalog `mesh` field in [aziel-runtime](https://github.com/AzielEliab/aziel-runtime); pair custody on [AZInterface](https://github.com/AzielEliab/azinterface); not a Softwares-tab product; no public qnsd proxy; no Node Gate). Catalog MCP `mesh_*` + FragGate `slug=mesh`.
 
 ChatGPT: GPT Actions → Import from URL (no auth). Grok: import the
 OpenAPI as a custom tool, or MCP. Venice: HTTP tools. Claude, Cursor,

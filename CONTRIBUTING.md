@@ -31,7 +31,8 @@ No network. No ML. No mailer.
    identity label.
 6. **Do not put private case facts** in the repo. Demo drops stay generic (`sample drop`).
 7. **Door vs local op.** `/v1/mesh/*` PROXY to aziel-runtime. Local ops are `/v1/{op}` only.
-   Suite mesh default OFF; QNM rollup live|locked|isolated; no Node Gate;
+   Suite mesh default OFF; QNM rollup live|locked|isolated; QNS-CD-1.0 is a
+   hub cite / Worker mesh cross-map only (no public qnsd proxy); no Node Gate;
    no auto-heal; not anonymity.
 8. New behavior needs a test that fails without the change.
 9. Canonical JSON: UTF-8, sorted keys, compact separators. Genesis
@@ -47,7 +48,7 @@ No network. No ML. No mailer.
 - Skill: `SKILL.md` (same text at Worker `GET /v1/skill`)
 - Flutter: `mobile/`
 - Isolated counter: `workers/download-tracker/`
-- Suite mesh / QNM Live Nodes: `workers/download-tracker/src/mesh.js` (`/v1/mesh/*` PROXY to aziel-runtime).
+- Suite mesh / QNM Live Nodes: `workers/download-tracker/src/mesh.js` (`/v1/mesh/*` PROXY to aziel-runtime). QNS-CD-1.0 (`QNS_CD_SPEC` / `QNS_CD`) is a hub cite / Worker mesh cross-map only.
 
 ## License of contributions
 
