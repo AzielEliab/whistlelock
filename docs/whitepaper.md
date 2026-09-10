@@ -222,10 +222,12 @@ journalists, and does not hide the operator’s network identity.
 
 The Worker homepage shows a suite Live Nodes strip. `/v1/mesh/*` PROXY
 to aziel-runtime. Suite mesh default OFF. QNM rollup is
-live|locked|isolated counts only. No Node Gate. No auto-heal. Not an
-anonymity network. Anon-broadcast is not a publish path. WhistleLock
-remains a local drop ledger + dead-man copy. Not a mailer. Hosted never
-holds whistle files.
+live|locked|isolated counts only. QNS-CD-1.0 (photon QNS1
+packet transfer) is a hub cite / Worker mesh cross-map only — not a
+Softwares-tab product and not a public qnsd proxy. No Node Gate. No
+auto-heal. Not an anonymity network. Anon-broadcast is not a publish
+path. WhistleLock remains a local drop ledger + dead-man copy. Not a
+mailer. Hosted never holds whistle files.
 
 A fork that adds hidden From: rotation or IP masking and keeps this name
 is no longer this spec.

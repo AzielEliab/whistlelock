@@ -1,6 +1,6 @@
 ---
 name: WhistleLock
-description: Use this when someone already has a whistle file and needs a local hashed drop ledger plus a local dead-man copy. Not a mailer. Hosted /v1 never stores drops. Dual surface: Worker /v1 + catalog MCP. This Worker /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME. Suite mesh default OFF. QNM-BUILD-1.0 live|locked|isolated. No Node Gate. No auto-heal. Not anonymity. Author Aziel Eliab.
+description: Use this when someone already has a whistle file and needs a local hashed drop ledger plus a local dead-man copy. Not a mailer. Hosted /v1 never stores drops. Dual surface: Worker /v1 + catalog MCP. This Worker /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME. Suite mesh default OFF. QNM-BUILD-1.0 live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer (hub cite / Worker mesh cross-map only; no public qnsd proxy). No Node Gate. No auto-heal. Not anonymity. Author Aziel Eliab.
 ---
 
 # WhistleLock skill
@@ -24,7 +24,7 @@ The Worker is a counted download + a preview API.
 - `POST /v1/hash-preview` — SHA-256 of posted bytes. **Not stored.**
 - `POST /v1/canon-preview` — hash a proposed ledger row. **Not stored.**
 - `GET /v1/skill` — this markdown. Does not increment downloads.
-- `GET /v1/mesh` — PROXY suite mesh status. Default OFF. QNM live|locked|isolated. Never enables.
+- `GET /v1/mesh` — PROXY suite mesh status. Default OFF. QNM live|locked|isolated. QNS-CD-1.0 cross-map. Never enables. No public qnsd proxy.
 - `GET /v1/mesh/nodes` — PROXY Live Nodes roster (5-minute presence).
 - `POST /v1/mesh/{enable,disable,join,heartbeat,leave,broadcast}` — PROXY. Bearer required to enable. No auto-heal. Anon-broadcast is not a publish path.
 
@@ -39,7 +39,7 @@ Always send `User-Agent: Mozilla/5.0`. Cloudflare Workers may 403 empty agents.
 - MCP: `POST https://whistlelock-download-tracker.vibelock.workers.dev/mcp`
 - Catalog MCP: `POST https://aziel-runtime.vibelock.workers.dev/mcp`
 
-Works with ChatGPT (GPT Actions / OpenAI), Grok (xAI), Venice, Claude (Anthropic), Cursor (MCP), Glama (MCP), Perplexity, Microsoft Copilot / Bing, Google Gemini / Vertex, Mistral, Meta AI, Apple Intelligence surfaces, Amazon Q tooling, DuckAssist, You.com, Cohere, and other MCP/OpenAPI-capable assistants. Catalog MCP `mesh_*` + FragGate `slug=mesh`. Suite mesh default OFF. QNM-BUILD-1.0 live|locked|isolated. No Node Gate. No auto-heal. Not anonymity.
+Works with ChatGPT (GPT Actions / OpenAI), Grok (xAI), Venice, Claude (Anthropic), Cursor (MCP), Glama (MCP), Perplexity, Microsoft Copilot / Bing, Google Gemini / Vertex, Mistral, Meta AI, Apple Intelligence surfaces, Amazon Q tooling, DuckAssist, You.com, Cohere, and other MCP/OpenAPI-capable assistants. Catalog MCP `mesh_*` + FragGate `slug=mesh`. Suite mesh default OFF. QNM-BUILD-1.0 live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer (hub cite / Worker mesh cross-map only; local qnsd in [qnm-node](https://github.com/AzielEliab/qnm-node); runtime cites in [aziel-runtime](https://github.com/AzielEliab/aziel-runtime); pair custody on [AZInterface](https://github.com/AzielEliab/azinterface); no public proxy). No Node Gate. No auto-heal. Not anonymity.
 
 ChatGPT: GPT Actions → Import from URL (no auth). Grok: import the OpenAPI as a custom tool, or MCP. Venice: HTTP tools. Claude, Cursor, Glama, and other MCP clients: `POST` the Worker or catalog MCP URL. Other OpenAPI-capable assistants: import the same OpenAPI.
 
@@ -69,6 +69,6 @@ Author: **Aziel Eliab**. Honest scope: Local drop ledger + dead-man copy. Not a 
 - Sample payload: `GET https://whistlelock-download-tracker.vibelock.workers.dev/v1/example`
 - Suite mesh: `GET https://whistlelock-download-tracker.vibelock.workers.dev/v1/mesh` PROXY (default OFF)
 
-Local UI: **Import JSON file** (`type=file`) and **Export JSON**. Then `whistlelock doctor`. Worker homepage Live Nodes strip polls `GET /v1/mesh` (default OFF).
+Local UI: **Import JSON file** (`type=file`) and **Export JSON**. Then `whistlelock doctor`. Worker homepage Live Nodes strip polls `GET /v1/mesh` (default OFF). QNS-CD-1.0 is a hub cite / Worker mesh cross-map only — not a Softwares-tab product.
 
-Same assistants as above. ChatGPT: GPT Actions. Grok: import catalog or Worker OpenAPI as a custom tool, or MCP. Venice: HTTP tools. Claude, Cursor, Glama, and other MCP clients: `POST` the catalog or Worker MCP URL. Suite mesh: `GET /v1/mesh` PROXY (default OFF). Catalog MCP `mesh_*` + FragGate `slug=mesh`.
+Same assistants as above. ChatGPT: GPT Actions. Grok: import catalog or Worker OpenAPI as a custom tool, or MCP. Venice: HTTP tools. Claude, Cursor, Glama, and other MCP clients: `POST` the catalog or Worker MCP URL. Suite mesh: `GET /v1/mesh` PROXY (default OFF). Catalog MCP `mesh_*` + FragGate `slug=mesh`. QNS-CD-1.0 photon QNS1 packet transfer is a cite only.

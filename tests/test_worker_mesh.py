@@ -1,6 +1,7 @@
-"""Suite mesh Live Nodes + QNM-BUILD-1.0 contract.
+"""Suite mesh Live Nodes + QNM-BUILD-1.0 + QNS-CD-1.0 cross-map contract.
 
-Default OFF. live|locked|isolated. No Node Gate. No auto-heal. Not anonymity.
+Default OFF. live|locked|isolated. No Node Gate. No public qnsd proxy.
+No auto-heal. Not anonymity. QNS-CD is a hub cite only.
 """
 
 from __future__ import annotations
@@ -29,6 +30,11 @@ def test_mesh_contract_default_off_qnm_law() -> None:
     assert "live|locked|isolated" in MESH
     assert "enabled_default: false" in MESH
     assert "anon_broadcast_publish_path: false" in MESH
+    assert 'QNS_CD_SPEC = "QNS-CD-1.0"' in MESH
+    assert "export const QNS_CD" in MESH
+    assert "photon QNS1 packet transfer" in MESH
+    assert "QNS-CD-1.0" in MESH
+    assert "No public qnsd proxy" in MESH or "no public qnsd proxy" in MESH
     assert "Aziel Eliab" in MESH
     assert "code: extra.code || \"MESH-OK\"" in MESH or '"MESH-OK"' in MESH
 
@@ -76,6 +82,7 @@ def test_runtime_advertises_mesh_proxy_and_pointer() -> None:
     assert "mesh: meshPointer()" in RUNTIME
     assert "/v1/mesh" in RUNTIME
     assert "QNM-BUILD-1.0" in RUNTIME
+    assert "QNS-CD-1.0" in RUNTIME
     assert "No Node Gate" in RUNTIME
     assert 'path === "/v1/mesh"' in RUNTIME or 'path.startsWith("/v1/mesh/")' in RUNTIME
 
@@ -100,8 +107,23 @@ def test_docs_advertise_mesh_proxy() -> None:
     assert "/v1/mesh" in README
     assert "/v1/mesh" in SKILL
     assert "QNM-BUILD-1.0" in WORKER_README
+    assert "QNS-CD-1.0" in README
+    assert "QNS-CD-1.0" in SKILL
+    assert "QNS-CD-1.0" in WORKER_README
     assert "AZIEL_RUNTIME" in WORKER_README
     assert "Live Nodes" in WORKER_README
     assert "MESH-OK" in WORKER_README
     assert "enabled: false" in WORKER_README
     assert "Aziel Eliab" in MESH
+
+
+def test_qns_cd_cross_map_not_a_product() -> None:
+    assert "softwares_tab: false" in MESH
+    assert "public_proxy: false" in MESH
+    assert "qnsd: false" in MESH
+    assert "https://github.com/AzielEliab/qnm-node" in MESH
+    assert "https://github.com/AzielEliab/aziel-runtime" in MESH
+    assert "https://github.com/AzielEliab/azinterface" in MESH
+    assert "attachQnsCd" in MESH
+    assert "QNS-CD-1.0" in INDEX
+    assert "no public qnsd proxy" in INDEX
