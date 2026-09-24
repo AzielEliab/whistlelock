@@ -3,167 +3,153 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>WhistleLock — local drop ledger + dead-man copy</title>
+  <meta name="color-scheme" content="light dark">
+  <title>WhistleLock</title>
   <link rel="stylesheet" href="/style.css">
 </head>
-<body class="simple">
-  <header>
-    <div class="tag">WhistleLock · v0.1.0 · loopback · does not mail</div>
-    <h1>WhistleLock</h1>
-    <p class="motto">Store the record. Chain the row. Release the packet locally.</p>
-    <p class="lede">
-      This is a folder on this computer. You drop a file you already have.
-      We hash it and chain the line. If you stop checking in, we copy a
-      packet you already placed into released/. We do not mail it.
-      You move the files.
-    </p>
+<body>
+  <header class="top">
+    <strong>WhistleLock</strong>
+    <span>On this computer</span>
   </header>
 
-  <aside class="banner limit" role="note">
-    THIS IS: a local vault + a chained ledger + a local dead-man copy.
-    THIS IS NOT: a mailer, a rotating From: address, IP masking, a mixnet,
-    an inbox scraper, a public website, UL, FoldLock, EmployeeLock, or
-    GodLock. Dead-man copy is LOCAL. Hosted never holds whistle files.
-    Demo drops are generic (“sample drop”).
-  </aside>
+  <main>
+    <h1>Keep a local ledger</h1>
+    <p class="lede">Drop a file you already have. If you miss a check-in, a packet you placed is copied on this computer.</p>
 
-  <div class="view-toggle" role="group" aria-label="Simple or advanced view">
-    <button type="button" id="view-simple" class="view on" aria-pressed="true">Simple</button>
-    <button type="button" id="view-advanced" class="view" aria-pressed="false">Advanced</button>
-  </div>
+    <p id="kid-plain" class="status" aria-live="polite">Reading the store on this computer…</p>
 
-  <section class="counts" aria-live="polite">
-    <div><span id="c-drops">0</span><label>drops</label></div>
-    <div><span id="c-rows">0</span><label>rows</label></div>
-    <div class="armed"><span id="c-armed">0</span><label>armed</label></div>
-    <div class="window"><span id="c-window">—</span><label>window h</label></div>
-    <div class="released"><span id="c-released">0</span><label>released</label></div>
-    <div class="ok"><span id="c-ok">0</span><label>chain OK</label></div>
-  </section>
-
-  <div class="actions simple-actions">
-    <button type="button" id="btn-init">Init</button>
-    <button type="button" id="btn-drop">Drop file</button>
-    <button type="button" id="btn-checkin">Check in</button>
-    <button type="button" id="btn-arm">Arm</button>
-    <button type="button" id="btn-tick">Tick</button>
-    <button type="button" id="btn-verify">Verify</button>
-    <input id="drop-file" type="file" hidden>
-  </div>
-
-  <form id="simple-form" autocomplete="off">
-    <fieldset>
-      <legend>Drop + arm</legend>
-      <label for="summary"><span class="kicker">Summary</span> A short name for this drop. Demo: sample drop.</label>
-      <input id="summary" name="summary" value="sample drop">
-      <label for="hours"><span class="kicker">Arm hours</span> How long you have to check in. Tick copies locally if you miss it. Does not mail.</label>
-      <input id="hours" name="hours" type="number" min="1" value="1">
-    </fieldset>
-  </form>
-
-  <div class="actions advanced-only">
-    <button type="button" id="btn-sample">Sample</button>
-    <button type="button" id="btn-list">List</button>
-    <button type="button" id="btn-export">Export receipt</button>
-    <button type="button" id="btn-doctor">Doctor</button>
-    <button type="button" id="btn-packet">Place packet file</button>
-    <input id="packet-file" type="file" hidden>
-  </div>
-
-  <form id="adv-form" class="advanced-only" autocomplete="off">
-    <fieldset>
-      <legend>Advanced drop fields</legend>
-      <label for="source"><span class="kicker">Source note</span> Optional. A note you already know.</label>
-      <input id="source" name="source" placeholder="operator note">
-      <label for="url"><span class="kicker">Source URL</span> A locator you already know. Not a hunt. verify --refresh hits this exact URL only.</label>
-      <input id="url" name="url" placeholder="https://example.invalid/file">
-    </fieldset>
-  </form>
-
-  <section class="report" aria-live="polite">
-    <p id="kid-plain" class="kid">Init a store, drop a file you already have, check in so the clock resets. Arm sets the hours. Tick copies the packet locally if you are late. We do not mail it.</p>
-    <p id="verify-line" class="sha-line"></p>
-    <p id="deadman-line" class="sha-line"></p>
-    <div id="advanced-panel" class="advanced-panel" hidden>
-      <h2>Ledger</h2>
-      <pre id="rows-pre">[]</pre>
+    <div class="actions">
+      <button type="button" id="btn-drop" class="primary">Drop a file</button>
+      <button type="button" id="btn-checkin" class="ghost">Check in</button>
+      <button type="button" id="btn-verify" class="ghost">Verify</button>
+      <input id="drop-file" type="file" hidden>
     </div>
-  </section>
 
-  
-<section class="card" id="aziel-json-io">
-  <h2>Import / Export JSON</h2>
-  <p class="help">Tap Import JSON file to pick a .json. Export JSON saves the current session locally. Nothing is uploaded.</p>
-  <input id="aziel-import-json" type="file" accept="application/json,.json">
-  <p>
-    <button type="button" id="aziel-import-json-btn">Import JSON file</button>
-    <button type="button" id="aziel-export-json-btn">Export JSON</button>
-  </p>
-  <p class="help" id="aziel-json-status"></p>
-</section>
+    <div class="field">
+      <label for="summary">Summary</label>
+      <input id="summary" name="summary" value="sample drop" autocomplete="off">
+      <p class="help">A short name stored with the file. The demo name is sample drop.</p>
+    </div>
 
-<footer>
-    <p>Apache-2.0 · Aziel Eliab · 2026 · Bound to 127.0.0.1:8873 · Forks welcome and always allowed.</p>
-    <p class="foot-note">Not a mailer. Dead-man copy is local. Hosted never holds whistle files. Paper WL-WP-0.1 · doi:10.5281/zenodo.22257762 (preprint also covers FoldLock; this product is WhistleLock only).</p>
+    <details id="advanced">
+      <summary>Advanced</summary>
+      <p class="help">Arm the clock, copy a packet, start a new store, or read the ledger.</p>
+      <div class="actions">
+        <button type="button" id="btn-init" class="ghost">Init</button>
+        <button type="button" id="btn-arm" class="ghost">Arm</button>
+        <button type="button" id="btn-tick" class="ghost">Tick</button>
+        <button type="button" id="btn-sample" class="ghost">Sample</button>
+        <button type="button" id="btn-list" class="ghost">List</button>
+        <button type="button" id="btn-doctor" class="ghost">Doctor</button>
+        <button type="button" id="btn-export" class="ghost">Export receipt</button>
+        <button type="button" id="btn-packet" class="ghost">Place packet file</button>
+        <input id="packet-file" type="file" hidden>
+      </div>
+      <div class="field">
+        <label for="hours">Hours before a local copy</label>
+        <input id="hours" name="hours" type="number" min="1" value="1">
+      </div>
+      <div class="field">
+        <label for="source">Source note</label>
+        <input id="source" name="source" autocomplete="off" placeholder="A note you already know">
+      </div>
+      <div class="field">
+        <label for="url">Source URL</label>
+        <input id="url" name="url" autocomplete="off" placeholder="https://example.invalid/file">
+        <p class="help">A locator you already know. Verify with refresh uses this exact URL.</p>
+      </div>
+
+      <section id="aziel-json-io">
+        <h2>Import / Export JSON</h2>
+        <p class="help">Import JSON reads a file on this computer. Export JSON saves this page’s fields here. Nothing is uploaded.</p>
+        <input id="aziel-import-json" type="file" accept="application/json,.json">
+        <p class="actions">
+          <button type="button" id="aziel-import-json-btn" class="ghost">Import JSON file</button>
+          <button type="button" id="aziel-export-json-btn" class="ghost">Export JSON</button>
+        </p>
+        <p class="help" id="aziel-json-status" aria-live="polite"></p>
+      </section>
+
+      <h2>Ledger</h2>
+      <p id="verify-line" class="sha-line"></p>
+      <p id="deadman-line" class="sha-line"></p>
+      <pre id="rows-pre">[]</pre>
+    </details>
+
+    <details id="about">
+      <summary>About</summary>
+      <p>
+        THIS IS: a local vault + a chained ledger + a local dead-man copy.
+        THIS IS NOT: a mailer, a rotating From: address, IP masking, a mixnet,
+        an inbox scraper, a public website, UL, FoldLock, EmployeeLock, or
+        GodLock. Dead-man copy is local. WhistleLock does not mail.
+        Hosted never holds whistle files.
+        Demo drops are generic (“sample drop”).
+      </p>
+      <p>Author: Aziel Eliab. Apache-2.0. Bound to 127.0.0.1. Forks are welcome.</p>
+    </details>
+  </main>
+
+  <footer>
+    <p>Aziel Eliab · Apache-2.0 · 2026</p>
   </footer>
   <script src="/app.js"></script>
-
-<script>
-(function(){
-  var file = document.getElementById("aziel-import-json");
-  var imp = document.getElementById("aziel-import-json-btn");
-  var exp = document.getElementById("aziel-export-json-btn");
-  var status = document.getElementById("aziel-json-status");
-  if (!file || !imp || !exp) return;
-  function say(m){ if (status) status.textContent = m; }
-  function collect(){
-    var data = { product: document.title || "", exported_at: new Date().toISOString(), author: "Aziel Eliab" };
-    document.querySelectorAll("input, select, textarea").forEach(function(el){
-      if (!el.id || el.type === "file" || el.type === "password") return;
-      data[el.id] = el.type === "checkbox" ? el.checked : el.value;
-    });
-    if (window.__azielLastJson && typeof window.__azielLastJson === "object") {
-      data.last = window.__azielLastJson;
+  <script>
+  (function(){
+    var file = document.getElementById("aziel-import-json");
+    var imp = document.getElementById("aziel-import-json-btn");
+    var exp = document.getElementById("aziel-export-json-btn");
+    var status = document.getElementById("aziel-json-status");
+    if (!file || !imp || !exp) return;
+    function say(m){ if (status) status.textContent = m; }
+    function collect(){
+      var data = { product: document.title || "", exported_at: new Date().toISOString(), author: "Aziel Eliab" };
+      document.querySelectorAll("input, select, textarea").forEach(function(el){
+        if (!el.id || el.type === "file" || el.type === "password") return;
+        data[el.id] = el.type === "checkbox" ? el.checked : el.value;
+      });
+      if (window.__azielLastJson && typeof window.__azielLastJson === "object") {
+        data.last = window.__azielLastJson;
+      }
+      return data;
     }
-    return data;
-  }
-  function apply(obj){
-    if (!obj || typeof obj !== "object") return;
-    window.__azielLastJson = obj;
-    Object.keys(obj).forEach(function(k){
-      if (k === "last" || k === "product" || k === "exported_at" || k === "author") return;
-      var el = document.getElementById(k);
-      if (!el || el.type === "file" || el.type === "password") return;
-      if (el.type === "checkbox") el.checked = !!obj[k];
-      else if ("value" in el) el.value = obj[k];
-    });
-    var ta = document.querySelector("textarea");
-    if (ta && obj && !obj[ta.id] && typeof obj === "object") {
-      try { if (!ta.value) ta.value = JSON.stringify(obj, null, 2); } catch (e) {}
+    function apply(obj){
+      if (!obj || typeof obj !== "object") return;
+      window.__azielLastJson = obj;
+      Object.keys(obj).forEach(function(k){
+        if (k === "last" || k === "product" || k === "exported_at" || k === "author") return;
+        var el = document.getElementById(k);
+        if (!el || el.type === "file" || el.type === "password") return;
+        if (el.type === "checkbox") el.checked = !!obj[k];
+        else if ("value" in el) el.value = obj[k];
+      });
+      var ta = document.querySelector("textarea");
+      if (ta && obj && !obj[ta.id] && typeof obj === "object") {
+        try { if (!ta.value) ta.value = JSON.stringify(obj, null, 2); } catch (e) {}
+      }
     }
-  }
-  imp.addEventListener("click", function(){ file.click(); });
-  file.addEventListener("change", function(){
-    var f = file.files && file.files[0];
-    if (!f) return;
-    var r = new FileReader();
-    r.onload = function(){
-      try { apply(JSON.parse(String(r.result || "{}"))); say("Imported " + f.name); }
-      catch (e) { say("Invalid JSON"); }
-    };
-    r.readAsText(f);
-  });
-  exp.addEventListener("click", function(){
-    var blob = new Blob([JSON.stringify(collect(), null, 2)], {type: "application/json"});
-    var a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "session.json";
-    a.click();
-    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 800);
-    say("Exported JSON");
-  });
-})();
-</script>
-
+    imp.addEventListener("click", function(){ file.click(); });
+    file.addEventListener("change", function(){
+      var f = file.files && file.files[0];
+      if (!f) return;
+      var r = new FileReader();
+      r.onload = function(){
+        try { apply(JSON.parse(String(r.result || "{}"))); say("Imported " + f.name); }
+        catch (e) { say("That file is not JSON. Choose another .json file."); }
+      };
+      r.readAsText(f);
+    });
+    exp.addEventListener("click", function(){
+      var blob = new Blob([JSON.stringify(collect(), null, 2)], {type: "application/json"});
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "session.json";
+      a.click();
+      setTimeout(function(){ URL.revokeObjectURL(a.href); }, 800);
+      say("Saved session.json on this computer.");
+    });
+  })();
+  </script>
 </body>
 </html>

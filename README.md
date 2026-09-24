@@ -1,185 +1,100 @@
 # WhistleLock
 
-Local drop ledger + dead-man copy. **Not a mailer.** Author Aziel Eliab.
+Keep a local ledger of a file you already have. If you miss a check-in, a packet you placed is copied on this computer.
 
 **Author:** Aziel Eliab
-**Date:** 2 September 2026
 **License:** [Apache-2.0](LICENSE)
 **Version:** 0.1.0
-**Spec:** `whistlelock-v0`
-**Paper:** WL-WP-0.1 — [docs/whitepaper.md](docs/whitepaper.md) · DOI [10.5281/zenodo.22257762](https://doi.org/10.5281/zenodo.22257762)
 
-That preprint also covers FoldLock. **This repo is WhistleLock only.**
+## Start
 
-> Store the record. Chain the row. Release the packet locally. The operator carries it.
+1. `python -m venv .venv && . .venv/bin/activate && pip install -e .`
+2. `whistlelock ui`
+3. Open http://127.0.0.1:8873/ and tap **Drop a file**.
 
-**Forks are welcome and always allowed.**
+`whistlelock doctor` checks this machine. `whistlelock --help` lists commands. Add `--json` when you need the same fields as JSON.
 
-## Honest scope
+The same commands work as `python3 whistlelock.py`.
 
-**THIS IS:** local directory store + TemporalLock-shaped rows + local dead-man copy + optional refresh of an operator-supplied `source_url` at verify.
+## Commands
 
-**THIS IS NOT:** rotating encrypted identity mailbox; IP-masking/proxy; mixnet/anonymous relay; boot scraper of inboxes; a public website; UL; FoldLock; EmployeeLock; GodLock; legal advice.
+| Command | What you get |
+| --- | --- |
+| `init STORE` | A new store folder |
+| `drop STORE FILE --summary TEXT` | A copy of a file you already have |
+| `checkin STORE` | The check-in clock reset |
+| `arm STORE --hours N` | Hours until a local copy |
+| `tick STORE` | A local copy, if the window has passed |
+| `verify STORE` | A chain and file check |
+| `list STORE` | Drops and the clock |
+| `ui` | The local app at http://127.0.0.1:8873/ |
+| `doctor` | A pass/fail check of this machine |
 
-The operator moves released packets on a channel they already control. Demo drops are generic (`sample drop`). Dead-man copy is **local**. WhistleLock **does not mail**.
-
-## One-click install
-
-```bash
-curl -fsSL https://whistlelock-download-tracker.vibelock.workers.dev/install.sh | bash
-```
-
-The script curls the **counted** tarball from this project's Worker
-(`/download`, User-Agent `Mozilla/5.0`), extracts, makes a venv, and
-`pip install -e .`. Then run `whistlelock ui`.
-
-Or tap **Download and install** on the Worker homepage — a 6th-grader
-button, not curl-only.
-
-## Quick start
+`drop` asks for `--summary`. `--source` and `--url` are optional. `verify --refresh` re-fetches a source URL you already stored. `ui --port` chooses another loopback port.
 
 ```bash
-python -m venv .venv && source .venv/bin/activate && pip install -e ".[dev]"
-python3 whistlelock.py init ./STORE
-echo "sample drop" > /tmp/sample.txt
-python3 whistlelock.py drop ./STORE /tmp/sample.txt --summary "sample drop"
-python3 whistlelock.py arm ./STORE --hours 1
-python3 whistlelock.py checkin ./STORE
-python3 whistlelock.py verify ./STORE
-whistlelock ui
+whistlelock init ./STORE
+whistlelock drop ./STORE ./notes.txt --summary "sample drop"
+whistlelock arm ./STORE --hours 24
+whistlelock checkin ./STORE
+whistlelock --json list ./STORE
 ```
-
-Open http://127.0.0.1:8873 (loopback only). Simple view: **Init / Drop /
-Check in / Arm / Tick / Verify**. No CDN, no telemetry. Does not mail.
-
-Self-check: `whistlelock doctor`.
-
-## Counted download (Cloudflare Worker)
-
-**This is the counted download.** GitHub releases exist as a mirror.
-The Worker serves the gzip itself (HTTP 200, no 302 to GitHub).
-
-# → [https://whistlelock-download-tracker.vibelock.workers.dev/](https://whistlelock-download-tracker.vibelock.workers.dev/) ←
-
-Direct tarball (also counted):
-[whistlelock-0.1.0.tar.gz](https://whistlelock-download-tracker.vibelock.workers.dev/download?asset=whistlelock-0.1.0.tar.gz)
-
-- Live count JSON: [https://whistlelock-download-tracker.vibelock.workers.dev/stats](https://whistlelock-download-tracker.vibelock.workers.dev/stats)
-- OpenAPI: [https://whistlelock-download-tracker.vibelock.workers.dev/openapi.json](https://whistlelock-download-tracker.vibelock.workers.dev/openapi.json)
-- Skill: [https://whistlelock-download-tracker.vibelock.workers.dev/v1/skill](https://whistlelock-download-tracker.vibelock.workers.dev/v1/skill)
-- Suite mesh proxy: [https://whistlelock-download-tracker.vibelock.workers.dev/v1/mesh](https://whistlelock-download-tracker.vibelock.workers.dev/v1/mesh) — default OFF; QNM live / locked / isolated; QNS-CD-1.0 cite (no public qnsd proxy)
-- GitHub: [https://github.com/AzielEliab/whistlelock](https://github.com/AzielEliab/whistlelock)
-
-Isolated counter: Worker `whistlelock-download-tracker`, KV `WHISTLELOCK_DOWNLOADS`. Not mixed with any other product. `/v1` does not increment downloads. Hosted never holds whistle files.
-
-Paper: [doi:10.5281/zenodo.22257762](https://doi.org/10.5281/zenodo.22257762) · [Zenodo record](https://zenodo.org/records/22257762) · `FoldLock_WhistleLock_FL-WP-0.3_WL-WP-0.1.pdf` · Apache-2.0 · Eliab, Aziel.
-
-## CLI
-
-```bash
-python3 whistlelock.py init STORE
-python3 whistlelock.py drop STORE FILE --summary TEXT [--source NOTE] [--url URL]
-python3 whistlelock.py checkin STORE
-python3 whistlelock.py arm STORE --hours N
-python3 whistlelock.py tick STORE
-python3 whistlelock.py verify STORE [--refresh]
-python3 whistlelock.py list STORE
-whistlelock ui
-whistlelock doctor
-```
-
-`--url` is a locator the operator already knows. `verify --refresh`
-fetches that exact URL only. `tick` copies `deadman/packet/` to
-`deadman/released/<UTC>/` and writes `RELEASE_NOTICE.txt` saying
-WhistleLock did not mail it. Empty packet still releases the notice.
-Will not copy again until re-armed.
-
-Python 3 stdlib only for the engine (`hashlib`, `json`, `shutil`,
-`urllib.request`).
 
 ## Store
 
 ```
 STORE/
-  HEADER.json          spec = whistlelock-v0
-  ledger.jsonl         append-only; genesis prev_hash = 64 ASCII zeros
+  HEADER.json
+  ledger.jsonl
   drops/DR-<digest12>/
   deadman/state.json
-  deadman/packet/      operator places files here
+  deadman/packet/
   deadman/released/<UTC>/
 ```
 
-Hashed fields only: `entry_id`, `timestamp`, `kind`, `summary`,
-`drop_id`, `payload_sha256`, `source_note`, `prev_hash`. Canonical UTF-8
-JSON, sorted keys, compact separators. kind: `drop|checkin|arm|release|verify|note`.
-A correction is a new row.
+`tick` copies `deadman/packet/` to `deadman/released/<UTC>/` and writes `RELEASE_NOTICE.txt`. The copy stays in that folder. You move the files. An empty packet still writes the notice.
 
-Cron example (this machine, this store, **no mailer**):
+A check every 15 minutes, on this machine, for this store:
 
 ```
-*/15 * * * * python3 /path/whistlelock.py tick /path/STORE
+*/15 * * * * whistlelock tick /path/STORE
 ```
 
-## Use with AI assistants
+Python 3 stdlib only for the engine (`hashlib`, `json`, `shutil`, `urllib.request`).
 
-Works with ChatGPT (GPT Actions / OpenAI), Grok (xAI), Venice, Claude (Anthropic), Cursor (MCP), Glama (MCP), Perplexity, Microsoft Copilot / Bing, Google Gemini / Vertex, Mistral, Meta AI, Apple Intelligence surfaces, Amazon Q tooling, DuckAssist, You.com, Cohere, and other MCP/OpenAPI-capable assistants.
+## Phone
 
-Skill file: [SKILL.md](SKILL.md). Same markdown at
-`GET /v1/skill` (does not increment downloads).
-
-- Worker OpenAPI: https://whistlelock-download-tracker.vibelock.workers.dev/openapi.json
-- Catalog OpenAPI: https://aziel-runtime.vibelock.workers.dev/openapi.json
-- MCP: `POST https://whistlelock-download-tracker.vibelock.workers.dev/mcp`
-- Catalog MCP: `POST https://aziel-runtime.vibelock.workers.dev/mcp`
-
-Always send `User-Agent: Mozilla/5.0`. Hosted `/v1` never stores drops
-or packets. Ops: `health`, `hash-preview`, `canon-preview`, `skill`.
-Suite mesh `/v1/mesh/*` PROXY via `AZIEL_RUNTIME` (default OFF; QNM-BUILD-1.0 live|locked|isolated; QNS-CD-1.0 photon QNS1 packet transfer is a hub cite / Worker mesh cross-map only — local qnsd in [qnm-node](https://github.com/AzielEliab/qnm-node); runtime cites + catalog `mesh` field in [aziel-runtime](https://github.com/AzielEliab/aziel-runtime); pair custody on [AZInterface](https://github.com/AzielEliab/azinterface); not a Softwares-tab product; no public qnsd proxy; no Node Gate). Catalog MCP `mesh_*` + FragGate `slug=mesh`.
-
-ChatGPT: GPT Actions → Import from URL (no auth). Grok: import the
-OpenAPI as a custom tool, or MCP. Venice: HTTP tools. Claude, Cursor,
-Glama, and other MCP clients: `POST` the Worker or catalog MCP URL.
-Other OpenAPI-capable assistants: import the same OpenAPI.
-
-```bash
-curl -A Mozilla/5.0 https://whistlelock-download-tracker.vibelock.workers.dev/v1/health
-curl -A Mozilla/5.0 -X POST https://whistlelock-download-tracker.vibelock.workers.dev/v1/hash-preview \
-  -H 'content-type: text/plain' --data-binary 'sample drop'
-```
-
-Paper DOI: [10.5281/zenodo.22257762](https://doi.org/10.5281/zenodo.22257762).
-
-## Flutter (iOS + Android)
-
-On-device preview under [mobile/](mobile/). Not a separate repo. Not a
-store IPA. `flutter create --org com.azieeliab --project-name whistlelock .`
+On-device preview: [mobile/README.md](mobile/README.md).
 
 ## Tests
 
 ```bash
-python -m venv .venv && source .venv/bin/activate && pip install -e ".[dev]"
+python -m venv .venv && . .venv/bin/activate && pip install -e ".[dev]"
 python -m pytest -q
 ```
 
-## Catalog and Worker import
+## Notes
 
-Catalog OpenAPI: https://aziel-runtime.vibelock.workers.dev/openapi.json
-Catalog MCP: `POST https://aziel-runtime.vibelock.workers.dev/mcp`
-This Worker skill: https://whistlelock-download-tracker.vibelock.workers.dev/v1/skill
-This Worker OpenAPI: https://whistlelock-download-tracker.vibelock.workers.dev/openapi.json
+Author: Aziel Eliab. Forks are welcome and always allowed. Spec `whistlelock-v0`. Paper WL-WP-0.1 · [doi:10.5281/zenodo.22257762](https://doi.org/10.5281/zenodo.22257762) (that preprint also covers FoldLock; this product is WhistleLock).
 
-Same assistants as above: ChatGPT (GPT Actions / OpenAI), Grok (xAI), Venice, Claude (Anthropic), Cursor (MCP), Glama (MCP), Perplexity, Microsoft Copilot / Bing, Google Gemini / Vertex, Mistral, Meta AI, Apple Intelligence surfaces, Amazon Q tooling, DuckAssist, You.com, Cohere, and other MCP/OpenAPI-capable clients. ChatGPT: GPT Actions (no auth). Grok: import the catalog or Worker OpenAPI as a custom tool, or MCP. Venice: HTTP tools. Claude, Cursor, Glama, and other MCP clients: `POST` the catalog or Worker MCP URL. Always send `User-Agent: Mozilla/5.0`.
+Demo text is `sample drop`. Hosted `/v1` never stores drops or packets. `whistlelock doctor --json` includes the `limitation` field.
 
-## Cite this
+Counted download and preview API: https://whistlelock-download-tracker.vibelock.workers.dev/
 
-Aziel Eliab. WhistleLock. https://github.com/AzielEliab/whistlelock. https://whistlelock-download-tracker.vibelock.workers.dev. https://doi.org/10.5281/zenodo.22257762.
+Direct archive: [whistlelock-0.1.0.tar.gz](https://whistlelock-download-tracker.vibelock.workers.dev/download?asset=whistlelock-0.1.0.tar.gz)
 
-- Catalog: https://aziel-runtime.vibelock.workers.dev/
-- Worker homepage: https://whistlelock-download-tracker.vibelock.workers.dev/
-- Counted download (gzip HTTP 200, no 302): https://whistlelock-download-tracker.vibelock.workers.dev/download
+```bash
+curl -fsSL https://whistlelock-download-tracker.vibelock.workers.dev/install.sh | bash
+```
+
+- OpenAPI: https://whistlelock-download-tracker.vibelock.workers.dev/openapi.json
+- Skill: https://whistlelock-download-tracker.vibelock.workers.dev/v1/skill
+- Catalog OpenAPI: https://aziel-runtime.vibelock.workers.dev/openapi.json
+- MCP: `POST https://whistlelock-download-tracker.vibelock.workers.dev/mcp`
+- Catalog MCP: `POST https://aziel-runtime.vibelock.workers.dev/mcp`
 - GitHub: https://github.com/AzielEliab/whistlelock
-- Citation JSON: https://whistlelock-download-tracker.vibelock.workers.dev/cite.json
-- DOI: https://doi.org/10.5281/zenodo.22257762
+
+`/v1/mesh` proxies the suite mesh through `AZIEL_RUNTIME` (default off; QNM-BUILD-1.0 live / locked / isolated). QNS-CD-1.0 photon QNS1 packet transfer is a hub cite only (local qnsd in [qnm-node](https://github.com/AzielEliab/qnm-node); no public qnsd proxy). Send `User-Agent: Mozilla/5.0`.
 
 ## License
 

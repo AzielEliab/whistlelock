@@ -24,7 +24,9 @@ class WhistleLockApp extends StatelessWidget {
     return MaterialApp(
       title: 'WhistleLock',
       debugShowCheckedModeBanner: false,
-      theme: buildAppTheme(),
+      theme: buildLightTheme(),
+      darkTheme: buildDarkTheme(),
+      themeMode: ThemeMode.system,
       home: const VaultPage(),
     );
   }
@@ -90,8 +92,7 @@ class _VaultPageState extends State<VaultPage> {
   bool _released = false;
   String _lastCheckin = '';
   int _intervalHours = 0;
-  String _status =
-      'Init a store, drop a file you already have. Tick copies locally. We do not mail.';
+  String _status = 'Drop text you already have.';
 
   @override
   void dispose() {
@@ -99,6 +100,12 @@ class _VaultPageState extends State<VaultPage> {
     _payload.dispose();
     _hours.dispose();
     super.dispose();
+  }
+
+  String get _clockLine {
+    if (!_armed) return 'Check-in clock is not armed.';
+    if (_released) return 'A local copy was already made.';
+    return 'Armed for $_intervalHours hour(s). Rows: ${_chain.length}.';
   }
 
   String _now() =>
@@ -141,7 +148,7 @@ class _VaultPageState extends State<VaultPage> {
       _lastCheckin = '';
       _intervalHours = 0;
       _append('note', 'store genesis');
-      _status = 'Store ready. Drop a file you already have. Does not mail.';
+      _status = 'Store ready. Drop text you already have.';
     });
   }
 
@@ -153,7 +160,7 @@ class _VaultPageState extends State<VaultPage> {
     setState(() {
       _append('drop', _summary.text.isEmpty ? 'sample drop' : _summary.text,
           dropId: dropId, payload: payload);
-      _status = 'Dropped $dropId. Local copy only.';
+      _status = 'Dropped $dropId.';
     });
   }
 
@@ -162,7 +169,7 @@ class _VaultPageState extends State<VaultPage> {
     setState(() {
       _lastCheckin = _now();
       _append('checkin', 'checkin at $_lastCheckin');
-      _status = 'Checked in. Clock reset. Tick will not copy inside the window.';
+      _status = 'Checked in. The clock reset.';
     });
   }
 
@@ -175,26 +182,24 @@ class _VaultPageState extends State<VaultPage> {
       _intervalHours = hours < 1 ? 1 : hours;
       _lastCheckin = _now();
       _append('arm', 'armed $_intervalHours h');
-      _status =
-          'Armed for $_intervalHours hour(s). Dead-man copy is local. We do not mail.';
+      _status = 'Armed for $_intervalHours hour(s). Check in before then.';
     });
   }
 
   void _tick({bool forceOverdue = false}) {
     if (!_armed) {
-      setState(() => _status = 'Not armed. Tap Arm first.');
+      setState(() => _status = 'Not armed yet. Open Advanced and tap Arm.');
       return;
     }
     if (_released && !forceOverdue) {
       setState(() =>
-          _status = 'Already released. Arm again for another local copy. We do not mail.');
+          _status = 'Already copied. Open Advanced and tap Arm for another local copy.');
       return;
     }
     setState(() {
       _released = true;
       _append('release', 'dead-man copied locally');
-      _status =
-          'Overdue. Copied packet locally. WhistleLock did not mail it.';
+      _status = 'Copied the packet on this device. It was not mailed.';
     });
   }
 
@@ -209,9 +214,7 @@ class _VaultPageState extends State<VaultPage> {
       expected = row.hash;
     }
     setState(() {
-      _status = ok
-          ? 'Chain hashes. Dead-man copy is local. Does not mail.'
-          : 'Chain did not hash.';
+      _status = ok ? 'Chain checks out.' : 'The chain needs a look.';
       if (ok) _append('verify', 'verify rows=${_chain.length} errors=0 missing=0 refresh=false');
     });
   }
@@ -221,48 +224,80 @@ class _VaultPageState extends State<VaultPage> {
     return Scaffold(
       appBar: AppBar(title: const Text('WhistleLock')),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         children: [
-          Text(limitation, style: Theme.of(context).textTheme.bodyMedium),
-          const SizedBox(height: 12),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
+          Text(
+            'Keep a local ledger of text you already have. If you miss a check-in, a packet is copied on this device.',
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+          const SizedBox(height: 16),
+          Text(_status, style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: 16),
+          FilledButton(onPressed: _drop, child: const Text('Drop')),
+          const SizedBox(height: 8),
+          Row(
             children: [
-              FilledButton(onPressed: _init, child: const Text('Init')),
-              FilledButton(onPressed: _drop, child: const Text('Drop')),
-              FilledButton(onPressed: _checkin, child: const Text('Check in')),
-              FilledButton(onPressed: _arm, child: const Text('Arm')),
-              FilledButton(onPressed: _tick, child: const Text('Tick')),
-              FilledButton(onPressed: _verify, child: const Text('Verify')),
+              Expanded(
+                child: OutlinedButton(onPressed: _checkin, child: const Text('Check in')),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: OutlinedButton(onPressed: _verify, child: const Text('Verify')),
+              ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 16),
           TextField(
             controller: _summary,
             decoration: const InputDecoration(labelText: 'Summary'),
           ),
+          const SizedBox(height: 8),
           TextField(
             controller: _payload,
-            decoration: const InputDecoration(
-                labelText: 'Drop text (hashed locally; not mailed)'),
+            decoration: const InputDecoration(labelText: 'Drop text'),
           ),
-          TextField(
-            controller: _hours,
-            decoration: const InputDecoration(labelText: 'Arm hours'),
-            keyboardType: TextInputType.number,
+          const SizedBox(height: 8),
+          ExpansionTile(
+            title: const Text('Advanced'),
+            children: [
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    OutlinedButton(onPressed: _init, child: const Text('Init')),
+                    OutlinedButton(onPressed: _arm, child: const Text('Arm')),
+                    OutlinedButton(onPressed: _tick, child: const Text('Tick')),
+                  ],
+                ),
+              ),
+              TextField(
+                controller: _hours,
+                decoration: const InputDecoration(labelText: 'Hours before a local copy'),
+                keyboardType: TextInputType.number,
+              ),
+              const SizedBox(height: 8),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(_clockLine),
+              ),
+            ],
           ),
-          const SizedBox(height: 12),
-          Text(_status),
-          Text(
-            'armed=$_armed  window=$_intervalHours  released=$_released  rows=${_chain.length}',
+          ExpansionTile(
+            title: const Text('About'),
+            children: [
+              Text(limitation),
+              const SizedBox(height: 8),
+              const Text('Author: Aziel Eliab. Apache-2.0.'),
+            ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           ..._chain.reversed.take(8).map(
                 (r) => ListTile(
-                  dense: true,
+                  contentPadding: EdgeInsets.zero,
                   title: Text('${r.kind} · ${r.summary}'),
-                  subtitle: Text(r.hash.substring(0, 16) + '…'),
+                  subtitle: Text('${r.hash.substring(0, 16)}…'),
                 ),
               ),
         ],

@@ -31,8 +31,12 @@ def test_ui_get_root_honest_scope() -> None:
         with urllib.request.urlopen(f"http://127.0.0.1:{port}/", timeout=5) as resp:
             html = resp.read().decode("utf-8")
         assert "WhistleLock" in html
+        assert "Drop a file" in html
         assert "THIS IS" in html
         assert "THIS IS NOT" in html
+        assert html.index("Drop a file") < html.index("THIS IS NOT")
+        assert 'id="advanced"' in html
+        assert 'id="about"' in html
         assert "does not mail" in html.lower() or "did not mail" in html.lower()
         assert "Init" in html
         assert "Drop" in html
@@ -49,12 +53,23 @@ def test_ui_get_root_honest_scope() -> None:
         with urllib.request.urlopen(f"http://127.0.0.1:{port}/style.css", timeout=3) as resp:
             css = resp.read().decode("utf-8")
         assert "--gold" in css or "c9a227" in css
+        assert "prefers-color-scheme" in css
+        assert ":focus-visible" in css
         with urllib.request.urlopen(f"http://127.0.0.1:{port}/api/health", timeout=3) as resp:
             health = json.loads(resp.read().decode("utf-8"))
         assert health["ok"] is True
         assert health["loopback"] is True
         assert health["telemetry"] is False
         assert health["mails"] is False
+        json_req = urllib.request.Request(
+            f"http://127.0.0.1:{port}/",
+            headers={"Accept": "application/json"},
+        )
+        with urllib.request.urlopen(json_req, timeout=5) as resp:
+            root_json = json.loads(resp.read().decode("utf-8"))
+        assert root_json["product"] == "whistlelock"
+        assert root_json["mails"] is False
+        assert "verify" in root_json
         req = urllib.request.Request(
             f"http://127.0.0.1:{port}/api/sample",
             data=b"{}",

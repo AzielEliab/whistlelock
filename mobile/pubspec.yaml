@@ -1,5 +1,5 @@
 name: whistlelock
-description: On-device drop ledger + local dead-man copy. Not a mailer.
+description: On-device drop ledger and local dead-man copy. Author Aziel Eliab.
 publish_to: "none"
 version: 0.1.0+1
 

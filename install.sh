@@ -27,6 +27,10 @@ python -m pip install -e .
 
 echo
 echo "Installed WhistleLock."
-echo "Run:  whistlelock ui"
-echo "Then open http://127.0.0.1:8873  (loopback only)"
-echo "Does not mail. Dead-man copy is local. Author: Aziel Eliab."
+echo "1. whistlelock ui"
+echo "2. Open http://127.0.0.1:8873/"
+echo "3. Tap Drop a file"
+echo
+echo "whistlelock doctor    checks this machine"
+echo "whistlelock --help    lists commands"
+echo "Author: Aziel Eliab."

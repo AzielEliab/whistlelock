@@ -230,7 +230,9 @@ def run_doctor(*, as_json: bool = False) -> int:
     }
     if as_json:
         print(json.dumps(payload, indent=2))
+    elif failed:
+        print("doctor failed")
+        print("Next: read the FAIL lines above, then run whistlelock doctor again.")
     else:
-        print("limitation:", LIMITATION)
-        print("doctor", "passed" if failed == 0 else "failed")
+        print("doctor passed")
     return 0 if failed == 0 else 1

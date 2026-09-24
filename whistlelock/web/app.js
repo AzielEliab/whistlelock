@@ -1,50 +1,59 @@
-/* WhistleLock UI. No CDN. No telemetry. Does not mail. */
+/* WhistleLock local UI. No CDN. No telemetry. */
 (function () {
-  const kid = document.getElementById("kid-plain");
-  const verifyLine = document.getElementById("verify-line");
-  const deadmanLine = document.getElementById("deadman-line");
-  const rowsPre = document.getElementById("rows-pre");
-  const advancedPanel = document.getElementById("advanced-panel");
-  const viewSimple = document.getElementById("view-simple");
-  const viewAdvanced = document.getElementById("view-advanced");
-  const dropFile = document.getElementById("drop-file");
-  const packetFile = document.getElementById("packet-file");
+  var kid = document.getElementById("kid-plain");
+  var verifyLine = document.getElementById("verify-line");
+  var deadmanLine = document.getElementById("deadman-line");
+  var rowsPre = document.getElementById("rows-pre");
+  var dropFile = document.getElementById("drop-file");
+  var packetFile = document.getElementById("packet-file");
 
-  let advanced = false;
-  document.body.classList.add("simple");
+  function showAdvanced() {
+    var adv = document.getElementById("advanced");
+    if (adv) adv.open = true;
+  }
 
-  function setView(next) {
-    advanced = next;
-    document.body.classList.toggle("simple", !advanced);
-    viewSimple.classList.toggle("on", !advanced);
-    viewAdvanced.classList.toggle("on", advanced);
-    viewSimple.setAttribute("aria-pressed", String(!advanced));
-    viewAdvanced.setAttribute("aria-pressed", String(advanced));
-    advancedPanel.hidden = !advanced;
+  function fail(err) {
+    var reason = err && err.message ? err.message : String(err);
+    kid.classList.add("bad");
+    kid.textContent = reason + " Next: reload this page, or run whistlelock doctor in a terminal.";
   }
 
   function paint(state) {
-    const c = (state && state.counts) || {};
-    document.getElementById("c-drops").textContent = c.drops || 0;
-    document.getElementById("c-rows").textContent = c.rows || 0;
-    document.getElementById("c-armed").textContent = c.armed || 0;
-    const dm = (state && state.deadman) || {};
-    document.getElementById("c-window").textContent = dm.interval_hours || "—";
-    document.getElementById("c-released").textContent = c.released || 0;
-    document.getElementById("c-ok").textContent = c.chain_ok || 0;
-    const v = (state && state.verify) || {};
-    const ok = v.ok === true;
-    kid.textContent = ok
-      ? "Chain hashes. Dead-man copy is local. WhistleLock did not mail anything."
-      : ("Chain did not hash. " + ((v.errors && v.errors[0]) || (v.missing_files && v.missing_files[0]) || "Verify failed."));
-    verifyLine.textContent = v.ok === undefined
-      ? ""
-      : ("ok=" + v.ok + " rows=" + v.rows + " missing=" + ((v.missing_files || []).length));
-    deadmanLine.textContent = "armed=" + Boolean(dm.armed) +
-      " interval_hours=" + (dm.interval_hours || 0) +
-      " last_checkin=" + (dm.last_checkin || "none") +
-      " released=" + Boolean(dm.released) +
-      " (local copy only; does not mail)";
+    var counts = (state && state.counts) || {};
+    var drops = counts.drops || 0;
+    var dm = (state && state.deadman) || {};
+    var verify = (state && state.verify) || {};
+    var ok = verify.ok === true;
+    kid.classList.toggle("bad", verify.ok === false);
+    var status;
+    if (verify.ok === true) {
+      status = drops === 1
+        ? "Chain checks out. 1 drop on this computer."
+        : "Chain checks out. " + drops + " drops on this computer.";
+    } else if (verify.ok === false) {
+      status = "The chain needs a look. " + ((verify.errors && verify.errors[0]) || (verify.missing_files && verify.missing_files[0]) || "Verify failed.");
+    } else {
+      status = "Drop a file you already have.";
+    }
+    if (!dm.armed) {
+      status += " Check-in clock is not armed.";
+    } else if (dm.released) {
+      status += " A local copy was already made.";
+    } else {
+      var hours = dm.interval_hours || 0;
+      status += " Armed for " + hours + " hour" + (hours === 1 ? "" : "s") + ".";
+    }
+    kid.textContent = status;
+    if (verify.ok === undefined) {
+      verifyLine.textContent = "";
+    } else if (ok) {
+      verifyLine.textContent = "Chain checks out. Rows: " + verify.rows + ".";
+    } else {
+      verifyLine.textContent = "Needs a look. Rows: " + verify.rows + ".";
+    }
+    deadmanLine.textContent = dm.armed
+      ? "Armed for " + (dm.interval_hours || 0) + " hour(s). Last check-in: " + (dm.last_checkin || "none") + "."
+      : "Check-in clock is not armed.";
     rowsPre.textContent = JSON.stringify({
       drops: state && state.drops,
       rows: state && state.rows,
@@ -60,7 +69,7 @@
       body: body == null ? "{}" : body
     }).then(function (res) {
       return res.json().then(function (j) {
-        if (!res.ok) throw new Error(j.error || ("HTTP " + res.status));
+        if (!res.ok) throw new Error(j.error || ("Request failed (" + res.status + ")."));
         return j;
       });
     });
@@ -72,107 +81,139 @@
 
   function fileToB64(file) {
     return file.arrayBuffer().then(function (buf) {
-      const bytes = new Uint8Array(buf);
-      let bin = "";
-      for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+      var bytes = new Uint8Array(buf);
+      var bin = "";
+      for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
       return { name: file.name, b64: btoa(bin) };
     });
   }
 
-  viewSimple.addEventListener("click", function () { setView(false); });
-  viewAdvanced.addEventListener("click", function () { setView(true); });
+  function value(id) {
+    var el = document.getElementById(id);
+    return el ? el.value : "";
+  }
 
   document.getElementById("btn-init").addEventListener("click", function () {
     post("/api/init", "{}").then(function (j) {
-      kid.textContent = "New empty store. Drop a file you already have. We do not mail.";
       paint(j);
-    }).catch(function (e) { kid.textContent = String(e); });
+      kid.classList.remove("bad");
+      kid.textContent = "New store on this computer. Drop a file you already have.";
+    }).catch(fail);
   });
+
   document.getElementById("btn-drop").addEventListener("click", function () { dropFile.click(); });
   dropFile.addEventListener("change", function () {
-    const f = dropFile.files && dropFile.files[0];
-    if (!f) return;
-    fileToB64(f).then(function (item) {
+    var file = dropFile.files && dropFile.files[0];
+    if (!file) return;
+    fileToB64(file).then(function (item) {
       return post("/api/drop", JSON.stringify({
         name: item.name,
         b64: item.b64,
-        summary: document.getElementById("summary").value || "sample drop",
-        source: document.getElementById("source").value || "",
-        url: document.getElementById("url").value || ""
+        summary: value("summary") || "sample drop",
+        source: value("source"),
+        url: value("url")
       }));
-    }).then(paint).catch(function (e) { kid.textContent = String(e); });
+    }).then(function (j) {
+      paint(j);
+      kid.classList.remove("bad");
+      kid.textContent = "Dropped " + file.name + ". It is stored on this computer.";
+    }).catch(fail);
   });
+
   document.getElementById("btn-checkin").addEventListener("click", function () {
     post("/api/checkin", "{}").then(function (j) {
-      kid.textContent = "Checked in. The clock reset. Tick will not copy while you are inside the window.";
       paint(j);
-    }).catch(function (e) { kid.textContent = String(e); });
+      kid.classList.remove("bad");
+      kid.textContent = "Checked in. The clock reset.";
+    }).catch(fail);
   });
+
   document.getElementById("btn-arm").addEventListener("click", function () {
-    const hours = parseInt(document.getElementById("hours").value, 10) || 1;
+    showAdvanced();
+    var hours = parseInt(value("hours"), 10) || 1;
     post("/api/arm", JSON.stringify({ hours: hours })).then(function (j) {
-      kid.textContent = "Armed for " + hours + " hour(s). Check in before then. Tick copies locally. We do not mail.";
       paint(j);
-    }).catch(function (e) { kid.textContent = String(e); });
+      kid.classList.remove("bad");
+      kid.textContent = "Armed for " + hours + " hour" + (hours === 1 ? "" : "s") + ". Check in before then.";
+    }).catch(fail);
   });
+
   document.getElementById("btn-tick").addEventListener("click", function () {
+    showAdvanced();
     post("/api/tick", "{}").then(function (j) {
-      const last = j.last || {};
+      paint(j);
+      var last = j.last || {};
+      kid.classList.remove("bad");
       if (last.released && last.reason !== "already released" && last.dest) {
-        kid.textContent = "Overdue. Copied packet locally to released/. WhistleLock did not mail it.";
+        kid.textContent = "Copied the packet on this computer. It was not mailed.";
       } else if (last.reason === "inside window") {
-        kid.textContent = "Inside the window. Nothing copied. Check in again before the hours run out.";
+        kid.textContent = "Inside the window. Nothing was copied.";
       } else if (last.reason === "already released") {
-        kid.textContent = "Already released. Arm again if you want another local copy. We do not mail.";
+        kid.textContent = "Already copied. Arm again if you want another local copy.";
       } else if (last.reason === "not armed") {
-        kid.textContent = "Not armed. Tap Arm first.";
+        kid.textContent = "Not armed yet. Set the hours, then tap Arm.";
       } else {
-        kid.textContent = JSON.stringify(last);
+        kid.textContent = "Tick finished. Tap List to read the detail.";
       }
-      paint(j);
-    }).catch(function (e) { kid.textContent = String(e); });
+    }).catch(fail);
   });
+
   document.getElementById("btn-verify").addEventListener("click", function () {
-    post("/api/verify", "{}").then(paint).catch(function (e) { kid.textContent = String(e); });
+    post("/api/verify", "{}").then(paint).catch(fail);
   });
+
   document.getElementById("btn-sample").addEventListener("click", function () {
-    post("/api/sample", "{}").then(paint).catch(function (e) { kid.textContent = String(e); });
-  });
-  document.getElementById("btn-list").addEventListener("click", function () {
-    post("/api/list", "{}").then(function (j) {
-      setView(true);
+    showAdvanced();
+    post("/api/sample", "{}").then(function (j) {
       paint(j);
-    }).catch(function (e) { kid.textContent = String(e); });
+      kid.classList.remove("bad");
+      kid.textContent = "Sample store is ready. The demo drop is named sample drop.";
+    }).catch(fail);
   });
+
+  document.getElementById("btn-list").addEventListener("click", function () {
+    showAdvanced();
+    post("/api/list", "{}").then(paint).catch(fail);
+  });
+
   document.getElementById("btn-doctor").addEventListener("click", function () {
+    showAdvanced();
     post("/api/doctor", "{}").then(function (j) {
-      kid.textContent = j.ok ? "Doctor passed. Engine, chain, dead-man, missing-file report, loopback. Does not mail." : "Doctor failed.";
+      kid.classList.toggle("bad", !j.ok);
+      kid.textContent = j.ok
+        ? "Doctor passed."
+        : "Doctor failed. The ledger below shows which check failed.";
       rowsPre.textContent = JSON.stringify(j, null, 2);
-      setView(true);
-    }).catch(function (e) { kid.textContent = String(e); });
+    }).catch(fail);
   });
+
   document.getElementById("btn-export").addEventListener("click", function () {
+    showAdvanced();
     post("/api/export", "{}").then(function (j) {
-      const blob = new Blob([JSON.stringify(j.receipt, null, 2)], { type: "application/json" });
-      const a = document.createElement("a");
+      var blob = new Blob([JSON.stringify(j.receipt, null, 2)], { type: "application/json" });
+      var a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
       a.download = j.filename || "whistlelock-receipt.json";
       a.click();
-      kid.textContent = "Exported a JSON receipt. Not a mailed packet.";
       paint(j.receipt);
-    }).catch(function (e) { kid.textContent = String(e); });
-  });
-  document.getElementById("btn-packet").addEventListener("click", function () { packetFile.click(); });
-  packetFile.addEventListener("change", function () {
-    const f = packetFile.files && packetFile.files[0];
-    if (!f) return;
-    fileToB64(f).then(function (item) {
-      return post("/api/packet", JSON.stringify(item));
-    }).then(function (j) {
-      kid.textContent = "Packet file placed locally. Tick copies it to released/ if you miss check-in. We do not mail it.";
-      paint(j);
-    }).catch(function (e) { kid.textContent = String(e); });
+      kid.classList.remove("bad");
+      kid.textContent = "Saved a JSON receipt on this computer.";
+    }).catch(fail);
   });
 
-  refresh().catch(function (e) { kid.textContent = String(e); });
+  document.getElementById("btn-packet").addEventListener("click", function () { packetFile.click(); });
+  packetFile.addEventListener("change", function () {
+    var file = packetFile.files && packetFile.files[0];
+    if (!file) return;
+    showAdvanced();
+    fileToB64(file).then(function (item) {
+      return post("/api/packet", JSON.stringify(item));
+    }).then(function (j) {
+      paint(j);
+      kid.classList.remove("bad");
+      kid.textContent = "Packet file placed on this computer. Tick copies it if a check-in is missed.";
+    }).catch(fail);
+  });
+
+  refresh().catch(fail);
 })();
