@@ -4,6 +4,7 @@ include CONTRIBUTING.md
 include pyproject.toml
 include .gitignore
 include install.sh
+include RUN.txt
 include whistlelock.py
 include AGENTS.md
 include SKILL.md

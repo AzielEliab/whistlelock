@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "whistlelock"
 version = "0.1.0"
-description = "WhistleLock: local drop ledger + dead-man copy. Not a mailer. Author Aziel Eliab."
+description = "WhistleLock: local drop ledger and dead-man copy. Author Aziel Eliab."
 readme = "README.md"
 license = {file = "LICENSE"}
 authors = [{name = "Aziel Eliab"}]

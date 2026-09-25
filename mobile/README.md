@@ -1,38 +1,23 @@
-# WhistleLock — iPhone & Android
+# WhistleLock on a phone
 
-On-device drop ledger + local dead-man copy. Does not mail.
+A local ledger and check-in clock on the device.
 
-Offline. No analytics. Dark matte / gold.
+**Author:** Aziel Eliab
 
-Application id: `com.azieeliab.whistlelock`
+## Start
 
-This phone app does not replace the desktop package (directory store + CLI).
-Not a store listing. Not a separate repo.
+1. `cd mobile`
+2. `flutter create --org com.azieeliab --project-name whistlelock . && flutter pub get`
+3. `flutter run`
 
-## Open in Android Studio / Xcode
+The desktop app is `whistlelock ui` in the parent folder. Open http://127.0.0.1:8873/ and tap **Drop a file**.
 
-The `android/` and `ios/` folders here are skeleton READMEs because
-this tree was written without the Flutter SDK on PATH.
+The `android/` and `ios/` folders here are skeleton notes. `flutter create` fills them in.
 
-```bash
-cd mobile
-flutter create --org com.azieeliab --project-name whistlelock .
-flutter pub get
-flutter run
-```
+## Notes
 
-Then open `android/` in Android Studio, or `ios/Runner.xcworkspace` in
-Xcode.
+Open **About** in the app for scope. Demo text is `sample drop`. Author: Aziel Eliab. Forks are welcome and always allowed.
 
-## Honest scope
-
-THIS IS: a local hashed drop + a check-in clock + a local packet copy.
-THIS IS NOT: a mailer, mixnet, IP mask, inbox scraper, FoldLock, or GodLock.
-
-Counted desktop download:
-
-# → https://whistlelock-download-tracker.vibelock.workers.dev/ ←
+Desktop download: https://whistlelock-download-tracker.vibelock.workers.dev/
 
 GitHub: https://github.com/AzielEliab/whistlelock
-
-**Forks are welcome and always allowed.**

@@ -1,0 +1,10 @@
+WhistleLock
+Author: Aziel Eliab
+
+1. python -m venv .venv && . .venv/bin/activate && pip install -e .
+2. whistlelock ui
+3. Open http://127.0.0.1:8873/ and tap Drop a file.
+
+whistlelock doctor    checks this machine
+whistlelock --help    lists commands
+Add --json for the same fields as JSON.

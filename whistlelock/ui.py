@@ -1,8 +1,7 @@
 """Local WhistleLock UI. Bind 127.0.0.1:8873 only.
 
-Simple: Init, Drop, Check in, Arm, Tick, Verify.
-Advanced: List, Doctor, Export receipt, packet file, ledger JSON.
-Dead-man copy is LOCAL. Banner: does not mail. No CDN, no telemetry.
+Human HTML by default. JSON when the client sends Accept: application/json,
+and on /api/*. Loopback only. No CDN, no telemetry.
 """
 
 from __future__ import annotations
@@ -146,9 +145,18 @@ class Handler(BaseHTTPRequestHandler):
             return None
         return self.rfile.read(length) if length else b"{}"
 
+    def _wants_json(self) -> bool:
+        accept = (self.headers.get("Accept") or "").lower()
+        if "text/html" in accept:
+            return False
+        return "application/json" in accept
+
     def do_GET(self) -> None:  # noqa: N802
         path = urlparse(self.path).path
         if path in {"/", "/index.html"}:
+            if path == "/" and self._wants_json():
+                self._json(200, _receipt(_ensure_store()))
+                return
             self._send(200, _web_bytes("index.html"), MIME[".html"])
             return
         if path == "/style.css":
@@ -341,13 +349,18 @@ def make_server(host: str = "127.0.0.1", port: int = 8873) -> ThreadingHTTPServe
     return ThreadingHTTPServer((host, port), Handler)
 
 
+def _open_line(host: str, bound_host: object, port: object) -> str:
+    if host in {"127.0.0.1", "localhost"}:
+        return f"Open http://127.0.0.1:{port}/"
+    if host == "::1" or str(bound_host) == "::1":
+        return f"Open http://[::1]:{port}/"
+    return f"Open http://{bound_host}:{port}/"
+
+
 def serve(host: str = "127.0.0.1", port: int = 8873) -> None:
     httpd = make_server(host, port)
     bound_host, bound_port = httpd.server_address[:2]
-    print(
-        f"WhistleLock UI http://{bound_host}:{bound_port} "
-        "(loopback only; does not mail; dead-man copy is local)"
-    )
+    print(_open_line(host, bound_host, bound_port))
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
