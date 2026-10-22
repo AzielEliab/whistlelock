@@ -31,7 +31,7 @@ ok(text.includes("Author: Aziel Eliab"), "llms.txt author");
 ok(text.includes(CRAWL_META.github), "llms.txt GitHub link");
 ok(text.includes(CRAWL_META.description), "llms.txt description is the Worker's existing description");
 ok(!/https:\/\/doi\.org\//.test(text) && !/zenodo\.org\/records/.test(text), "llms.txt has no dead DOI/Zenodo link");
-if (CRAWL_META.doi) ok(text.includes("HTTP 410"), "llms.txt labels the DOI historical (410)");
+if (CRAWL_META.doi) ok(text.includes("Zenodo record removed (" + CRAWL_META.doi_removed + ")") && !text.includes("HTTP 410"), "llms.txt labels the DOI historical (Zenodo record removed)");
 ok((await get("/llms.txt/")).status === 200, "/llms.txt/ trailing slash 200");
 const head = await get("/llms.txt", "HEAD");
 ok(head.status === 200 && (await head.text()) === "", "HEAD /llms.txt 200 with empty body");
